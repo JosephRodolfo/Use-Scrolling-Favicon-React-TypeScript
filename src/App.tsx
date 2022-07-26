@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import {useScrollingFavicon} from "../src/hooks/useScrollingFavicon";
 function App() {
-  useScrollingFavicon("The stock market is down today", 10, "blue", "white", "times");
+  useScrollingFavicon("J.R. Loves Karen", 50, "white", "black", "arial");
   return (
     <div className="App">
       <header className="App-header">
