@@ -1,8 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+import {useScrollingFavicon} from "../src/hooks/useScrollingFavicon";
 function App() {
+  useScrollingFavicon("The stock market is down today", 10, "blue", "white", "times");
   return (
     <div className="App">
       <header className="App-header">
