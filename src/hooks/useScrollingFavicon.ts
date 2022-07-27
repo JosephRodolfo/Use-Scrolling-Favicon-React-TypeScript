@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { timer } from "../components/timer";
-import { clipCanvas, fillFont, padBannerImage } from "./useScrollingFaviconHelpers";
+import {
+  timer,
+  clipCanvas,
+  createBannerFavicon,
+  fillFont,
+  padBannerImage,
+} from "./useScrollingFaviconHelpers";
 
 type useScrollingFaviconParamObject = {
   word: string;
@@ -17,31 +22,37 @@ export function useScrollingFavicon({
   fontFamily = "arial",
 }: useScrollingFaviconParamObject) {
   const [counter, setCounter] = useState(0);
-  //gets favicon
+  //gets favicon, clears favicon if already existing
   const favicon = document.getElementById("favicon") as HTMLAnchorElement;
   favicon.href = "";
-  //creates main canvas context object with given word on it.
-  const banner: HTMLCanvasElement | null = document.createElement("canvas");
-  banner.id = "banner";
-  banner.width = word.length * 16;
-  banner.height = 16;
 
+  //creates starting canvas in correct size then canvascontext object;
+  const banner = createBannerFavicon(word);
   try {
-    const canvas3 = banner.getContext("2d");
-    if (!canvas3) {
+    const ctx = banner.getContext("2d");
+
+    if (!ctx) {
       throw new Error();
     }
 
-    fillFont(canvas3, fontFamily, color);
-    canvas3.fillText(word, 0, canvas3.canvas.height - 1);
-    canvas3.canvas.width =
-      word.length > 1 ? canvas3.measureText(word).width : 16;
-    canvas3.fillStyle = backgroundColor;
-    canvas3.fillRect(0, 0, canvas3.canvas.width, canvas3.canvas.height);
-    // canvas3.canvas.style.width = canvas3.canvas.width + "px";
-    fillFont(canvas3, fontFamily, color);
-    canvas3.fillText(word, 0, canvas3.canvas.height - 1);
-    const paddedContext = padBannerImage(canvas3);
+    //places text on canvascontext
+    fillFont(ctx, fontFamily, color);
+    ctx.fillText(word, 0, ctx.canvas.height - 1);
+
+    //sets canvascontext width to text width; if no letters, sets a square shaped canvas
+    ctx.canvas.width = word.length > 1 ? ctx.measureText(word).width : 16;
+
+    //colors background
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    //with new width known and set, prints text on canvas so it is of right length
+    fillFont(ctx, fontFamily, color);
+    ctx.fillText(word, 0, ctx.canvas.height - 1);
+
+    //adds blank space in front of canvas to simulate text appearing from void
+    const paddedContext = padBannerImage(ctx);
+
     //main function used as callback for timer, offset advances clip by 1 pixel to simulate scrolling movement.
     const replaceFaviconCb = () => {
       const newImage = clipCanvas(counter, paddedContext, backgroundColor);
