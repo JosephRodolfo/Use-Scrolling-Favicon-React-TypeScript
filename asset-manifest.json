@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/useScrollingFavicon-React-TypeScript/static/css/main.5f2f73b8.css",
+    "main.js": "/useScrollingFavicon-React-TypeScript/static/js/main.c5c1864e.js",
+    "static/js/787.a7a90389.chunk.js": "/useScrollingFavicon-React-TypeScript/static/js/787.a7a90389.chunk.js",
+    "index.html": "/useScrollingFavicon-React-TypeScript/index.html",
+    "main.5f2f73b8.css.map": "/useScrollingFavicon-React-TypeScript/static/css/main.5f2f73b8.css.map",
+    "main.c5c1864e.js.map": "/useScrollingFavicon-React-TypeScript/static/js/main.c5c1864e.js.map",
+    "787.a7a90389.chunk.js.map": "/useScrollingFavicon-React-TypeScript/static/js/787.a7a90389.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5f2f73b8.css",
+    "static/js/main.c5c1864e.js"
+  ]
+}
