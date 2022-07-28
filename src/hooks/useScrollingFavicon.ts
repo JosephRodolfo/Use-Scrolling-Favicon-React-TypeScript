@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   timer,
   clipCanvas,
@@ -22,13 +22,14 @@ export function useScrollingFavicon({
   fontFamily = "arial",
 }: useScrollingFaviconParamObject) {
   const [counter, setCounter] = useState(0);
-  //gets favicon, clears favicon if already existing
   const favicon = document.getElementById("favicon") as HTMLAnchorElement;
   favicon.href = "";
 
-  //creates starting canvas in correct size then canvascontext object;
-  const banner = createBannerFavicon(word);
-  try {
+  let memoizedArray = useMemo(() => {
+    //gets favicon, clears favicon if already existing
+
+    //creates starting canvas in correct size then canvascontext object;
+    const banner = createBannerFavicon(word);
     const ctx = banner.getContext("2d");
 
     if (!ctx) {
@@ -53,18 +54,34 @@ export function useScrollingFavicon({
     //adds blank space in front of canvas to simulate text appearing from void
     const paddedContext = padBannerImage(ctx);
 
-    //main function used as callback for timer, offset advances clip by 1 pixel to simulate scrolling movement.
-    const replaceFaviconCb = () => {
-      const newImage = clipCanvas(counter, paddedContext, backgroundColor);
-      favicon.href = newImage;
-      setCounter(counter + 1);
-      if (paddedContext.canvas.width < counter && counter > 10) {
-        setCounter(0);
+    const createSlideArray = () => {
+      const slideArr = [];
+      let slideCounter = paddedContext.canvas.width;
+
+      while (paddedContext.canvas.width > 0 && slideCounter) {
+        const newImage = clipCanvas(
+          slideCounter,
+          paddedContext,
+          backgroundColor
+        );
+        slideArr.push(newImage);
+        slideCounter--;
       }
+      return slideArr.reverse();
     };
 
-    timer.start(replaceFaviconCb, speed);
-  } catch (e) {
-    console.error(e);
-  }
+    const slideShow = createSlideArray();
+    return slideShow;
+  }, [backgroundColor, color, fontFamily, word]);
+
+  const playSlideShow = () => {
+    const current = memoizedArray[counter];
+    favicon.href = current;
+    setCounter(counter + 1);
+    if (counter === memoizedArray.length) {
+      setCounter(0);
+    }
+  };
+
+  timer.start(playSlideShow, speed);
 }
